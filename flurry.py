@@ -9,7 +9,7 @@ import traceback
 import secrets 
 
 # Create a file to log program progress as it runs
-log_file = open("//CHFS/Shared Documents/OpenData/datasets/logfiles/flurrylog.txt", "a")
+log_file = open("//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/flurrylog.txt", "a")
 # Write date at beginning of log file
 now = str(datetime.date.today())
 log_file.write(now +"\n")
@@ -36,10 +36,10 @@ def get_flurry():
     
     # Open the file to write/append to 
     # Stored in flurry folder with open data directory
-    flurrycsv = open('//CHFS/Shared Documents/OpenData/datasets/flurrydata/flurry.csv', "a")
+    flurrycsv = open('//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/flurry.csv', "a")
 
     # Write CSV headings if the file is empty
-    if os.stat("//CHFS/Shared Documents/OpenData/datasets/flurrydata/flurry.csv").st_size == 0:
+    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/flurry.csv").st_size == 0:
         flurrycsv.write("Company Name, Average Time Per Session, Active Devices, Language, Time Spent, Sessions, Date and Time, Average Time Per Device, App Name, New Devices"+"\n")
 
     # Set counter
@@ -66,8 +66,8 @@ def get_flurry():
     log_file.write("Flurry data successfully written to flurrydata directory. \n")
     
     # Copy flurry file to unpub direct
-    f = open('//CHFS/Shared Documents/OpenData/datasets/flurrydata/flurry.csv')
-    f1 = open("//CHFS/Shared Documents/OpenData/datasets/unpublished/flurry.csv", "w")
+    f = open('//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/flurry.csv')
+    f1 = open("//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/updatedflurry.csv", "w")
     for line in f:
         f1.write(line)
     log_file.write("Flurry data successfully copied into unpublished directory." + "\n")
