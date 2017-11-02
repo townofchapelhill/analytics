@@ -8,6 +8,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 
 # JSON File location -- update to CHFS directory 
+# Store file on town comp
 KEY_FILE_LOCATION = "client_secrets.json"
 
 VIEW_ID = secrets.viewid
