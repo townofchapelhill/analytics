@@ -50,7 +50,7 @@ def get_report(analytics):
 def print_response(response):
   
   # Change to correct path
-  monthlysearch = open("monthlysearch.csv", "w")
+  monthlysearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlysearch.csv", "w")
   """Parses and prints the Analytics Reporting API V4 response.
 
   Args:
