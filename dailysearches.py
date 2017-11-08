@@ -49,7 +49,7 @@ def get_report(analytics):
 
 def print_response(response):
   
-  dailysearch = open("dailysearch.csv", "w")
+  dailysearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailysearch.csv", "w")
   """Parses and prints the Analytics Reporting API V4 response.
 
   Args:
