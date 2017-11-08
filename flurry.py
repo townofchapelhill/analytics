@@ -39,7 +39,7 @@ def get_flurry():
     flurrycsv = open('//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry.csv', "a")
 
     # Write CSV headings if the file is empty
-    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry/flurry.csv").st_size == 0:
+    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/library/flurry.csv").st_size == 0:
         flurrycsv.write("Company Name, Average Time Per Session, Active Devices, Language, Time Spent, Sessions, Date and Time, Average Time Per Device, App Name, New Devices"+"\n")
 
     # Set counter
