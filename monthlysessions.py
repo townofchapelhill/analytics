@@ -48,7 +48,7 @@ def get_report(analytics):
 
 def print_response(response):
   
-  monthlysessions = open("monthlysessions.csv", "w")
+  monthlysessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlysessions.csv", "a")
   """Parses and prints the Analytics Reporting API V4 response.
 
   Args:
