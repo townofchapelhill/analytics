@@ -5,6 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
 import traceback
+import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "toch_secrets.json"
@@ -72,7 +73,7 @@ def print_response(response):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
           dailysession = (metricHeader.get('name') + ': ' + value).replace("ga:sessions: ", "sessions, ")
           daily = dailysession.replace('"', "")
-          dailysessions.write(daily + ", \n")
+          dailysessions.write(daily + ", " + str(datetime.datetime.now()) + "\n")
           # print metricHeader.get('name') + ': ' + value.encode("utf-8")
       
 def main():
