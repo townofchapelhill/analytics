@@ -76,7 +76,7 @@ def print_response(response):
           monthlyviews = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
           viewsstripped = monthlyviews.replace('"', "")
           viewsstripped = viewsstripped.replace(",","")
-          monthlysearch.write(viewsstripped + "," + str(datetime.datetime.now()) + "\n")
+          monthlysearch.write(viewsstripped + ", " + str(datetime.datetime.now()) + "\n")
           print metricHeader.get('name') + ': ' + value.encode("utf-8")
 
 def main():
