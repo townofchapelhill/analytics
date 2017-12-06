@@ -4,6 +4,7 @@ from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
+import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "client_secrets.json"
@@ -75,7 +76,7 @@ def print_response(response):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
           daily = (metricHeader.get('name') + ': ' + value).replace("ga:sessions:", "sessions, ")
           sessionsstripped = daily.replace('"', "")
-          dailysessions.write(sessionsstripped + ", \n")
+          dailysessions.write(sessionsstripped + ", " + str(datetime.datetime.now()) + "\n")
           print metricHeader.get('name') + ': ' + value.encode("utf-8")
       
       
