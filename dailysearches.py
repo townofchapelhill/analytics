@@ -4,6 +4,7 @@ from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
+import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "client_secrets.json"
@@ -77,7 +78,7 @@ def print_response(response):
           monthlyviews = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
           viewsstripped = monthlyviews.replace('"', "")
           viewsstripped = viewsstripped.replace(",","")
-          dailysearch.write(viewsstripped + ", \n")
+          dailysearch.write(viewsstripped + ", " + str(datetime.datetime.now()) + "\n")
           print metricHeader.get('name') + ': ' + value.encode("utf-8")
     
 
