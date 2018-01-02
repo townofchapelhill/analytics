@@ -63,11 +63,10 @@ def print_response(response):
       dateRangeValues = row.get('metrics', [])
 
       for header, dimension in zip(dimensionHeaders, dimensions):
-        daily = (str(header.encode("utf-8")) + ': ' + str(dimension.encode("utf-8"))).replace("ga:searchKeyword: ", "")
+        daily = (header) + ': ' + dimension)).replace("ga:searchKeyword: ", "")
         term = daily.replace('"',"")
         term = term.replace(",","")
         dailytownsearch.write(term + ", ")
-        # print header + ': ' + dimension
 
       for i, values in enumerate(dateRangeValues):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
@@ -75,10 +74,9 @@ def print_response(response):
           count = dailycount.replace('"', "")
           count = count.replace(",","")
           dailytownsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
-          # print metricHeader.get('name') + ': ' + value.encode("utf-8")
       
 def main():
-  log_file = open("analyticserrorlog.txt", "a")
+  log_file = open("townanalyticserrorlog.txt", "a")
   try:
     analytics = initialize_analyticsreporting()
     response = get_report(analytics)
@@ -87,5 +85,5 @@ def main():
         log_file.write("There was an error running the program.")
         log_file.write(traceback.format_exc() + "\n")
  
- if __name__ == '__main__':
-  main()
+if __name__ == '__main__':
+   main()
