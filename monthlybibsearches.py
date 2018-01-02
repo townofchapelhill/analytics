@@ -4,6 +4,7 @@ from apiclient.discovery import build
 from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
+import traceback
 import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
@@ -40,15 +41,13 @@ def get_report(analytics):
           'metrics': [{'expression': 'ga:searchResultViews'}],
           'dimensions': [{'name': 'ga:searchKeyword'}],
         }]
-        
       }
   ).execute()
-
 
 def print_response(response):
   
   # Change to correct path
-  monthlysearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlybibliosearch.csv", "w")
+  monthlybibsearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlybibliosearch.csv", "w")
   """Parses and prints the Analytics Reporting API V4 response.
   Args:
     response: An Analytics Reporting API V4 response.
@@ -58,32 +57,32 @@ def print_response(response):
     dimensionHeaders = columnHeader.get('dimensions', [])
     metricHeaders = columnHeader.get('metricHeader', {}).get('metricHeaderEntries', [])
     
-
     for row in report.get('data', {}).get('rows', []):
       dimensions = row.get('dimensions', [])
       dateRangeValues = row.get('metrics', [])
 
       for header, dimension in zip(dimensionHeaders, dimensions):
-        monthly = (header.encode("utf-8") + ': ' + dimension.encode("utf-8")).replace("ga:searchKeyword: ", "")
-        monthlystripped = monthly.replace('"',"")
-        monthlystripped = monthlystripped.replace(",","")
-        monthlysearch.write(monthlystripped + ", ")
-        print header + ': ' + dimension
+        daily = (header + ': ' + dimension).replace("ga:searchKeyword: ", "")
+        term = daily.replace('"',"")
+        term = term.replace(",","")
+        monthlybibsearch.write(term + ", ")
 
       for i, values in enumerate(dateRangeValues):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
-          monthlyviews = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
-          viewsstripped = monthlyviews.replace('"', "")
-          viewsstripped = viewsstripped.replace(",","")
-          monthlysearch.write(viewsstripped + ", " + str(datetime.datetime.now()) + "\n")
-          print metricHeader.get('name') + ': ' + value.encode("utf-8")
+          dailycount = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
+          count = dailycount.replace('"', "")
+          count = count.replace(",","")
+          monthlybibsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
       
-      
-
 def main():
-  analytics = initialize_analyticsreporting()
-  response = get_report(analytics)
-  print_response(response)
-
+  log_file = open("bibanalyticserrorlog.txt", "a")
+  try:
+    analytics = initialize_analyticsreporting()
+    response = get_report(analytics)
+    print_response(response)
+  except Exception as exc:
+        log_file.write("There was an error running the program.")
+        log_file.write(traceback.format_exc() + "\n")
+ 
 if __name__ == '__main__':
-  main()
+   main()
