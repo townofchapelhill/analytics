@@ -5,12 +5,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
 import traceback
-import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "toch_secrets.json"
 
-VIEW_ID = secrets.toch_viewid
+VIEW_ID = "93860273"
 
 def initialize_analyticsreporting():
   """Initializes an Analytics Reporting API V4 service object.
@@ -24,6 +23,7 @@ def initialize_analyticsreporting():
   analytics = build('analyticsreporting', 'v4', credentials=credentials)
 
   return analytics
+
 
 def get_report(analytics):
   """Queries the Analytics Reporting API V4.
@@ -65,30 +65,27 @@ def print_response(response):
       dateRangeValues = row.get('metrics', [])
 
       for header, dimension in zip(dimensionHeaders, dimensions):
-        monthlysearches = (str(header.encode("utf-8")) + ': ' + str(dimension.encode("utf-8"))).replace("ga:searchKeyword: ", "")
-        monthly = monthlysearches.replace('"',"")
-        monthly = monthly.replace(",","")
-        monthlysearch.write(monthly + ", ")
-        # print header + ': ' + dimension
+        monthly = (header.encode("utf-8") + ': ' + dimension.encode("utf-8")).replace("ga:searchKeyword: ", "")
+        monthlystripped = monthly.replace('"',"")
+        monthlystripped = monthlystripped.replace(",","")
+        monthlysearch.write(monthlystripped + ", ")
 
       for i, values in enumerate(dateRangeValues):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
           monthlyviews = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
           viewsstripped = monthlyviews.replace('"', "")
           viewsstripped = viewsstripped.replace(",","")
-          monthlysearch.write(viewsstripped + ", " + str(datetime.datetime.now()) + "\n")
-          # print metricHeader.get('name') + ': ' + value.encode("utf-8")
+          monthlysearch.write(viewsstripped + ", \n")
       
 def main():
-  log_file = open("analyticserror.txt", "a")
+  log_file = open("townanalyticserror.txt", "w")
   try:
     analytics = initialize_analyticsreporting()
     response = get_report(analytics)
-    print_response(response)
   except Exception as exc:
         log_file.write("There was an error running the program.")
         log_file.write(traceback.format_exc() + "\n")
-  
+  print_response(response)
 
 if __name__ == '__main__':
   main()
