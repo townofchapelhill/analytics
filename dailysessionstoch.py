@@ -6,85 +6,80 @@ from oauth2client.service_account import ServiceAccountCredentials
 import secrets
 import traceback
 import datetime
+import csv
+import os
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "toch_secrets.json"
 
 VIEW_ID = secrets.toch_viewid
 
+
 def initialize_analyticsreporting():
-  """Initializes an Analytics Reporting API V4 service object.
-  Returns:
-    An authorized Analytics Reporting API V4 service object.
-  """
-  credentials = ServiceAccountCredentials.from_json_keyfile_name(
-      KEY_FILE_LOCATION, SCOPES)
+    """Initializes an Analytics Reporting API V4 service object.
+    Returns:
+        An authorized Analytics Reporting API V4 service object.
+    """
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(KEY_FILE_LOCATION, SCOPES)
 
-  # Build the service object.
-  analytics = build('analyticsreporting', 'v4', credentials=credentials)
+    # Build the service object.
+    analytics = build('analyticsreporting', 'v4', credentials=credentials)
 
-  return analytics
+    return analytics
+
 
 def get_report(analytics):
-  """Queries the Analytics Reporting API V4.
-  Args:
-    analytics: An authorized Analytics Reporting API V4 service object.
-  Returns:
-    The Analytics Reporting API V4 response.
-  """
-  return analytics.reports().batchGet(
-      body={
-        'reportRequests': [
-        {
-          'viewId': VIEW_ID,
-          'dateRanges': [{'startDate': '1daysAgo', 'endDate': 'today'}],
-          'metrics': [{'expression': 'ga:sessions'}]
-        }]
-        
-      }
-  ).execute()
+    """Queries the Analytics Reporting API V4.
+    Args:
+        analytics: An authorized Analytics Reporting API V4 service object.
+    Returns:
+        The Analytics Reporting API V4 response.
+    """
+    return analytics.reports().batchGet(
+        body={
+            'reportRequests': [
+                {
+                    'viewId': VIEW_ID,
+                    'dateRanges': [{'startDate': '1daysAgo', 'endDate': 'today'}],
+                    'metrics': [{'expression': 'ga:sessions'}]
+                }]
+        }
+    ).execute()
 
 
 def print_response(response):
-  
-  # Change to correct path
-  dailysessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv", "w")
-  """Parses and prints the Analytics Reporting API V4 response.
-  Args:
-    response: An Analytics Reporting API V4 response.
-  """
-  for report in response.get('reports', []):
-    columnHeader = report.get('columnHeader', {})
-    dimensionHeaders = columnHeader.get('dimensions', [])
-    metricHeaders = columnHeader.get('metricHeader', {}).get('metricHeaderEntries', [])
-    
+    """Parses and prints the Analytics Reporting API V4 response.
+    Args:
+        response: An Analytics Reporting API V4 response.
+    """
+    dailysessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv", "a")
+    writer = csv.writer(dailysessions)
 
-    for row in report.get('data', {}).get('rows', []):
-      dimensions = row.get('dimensions', [])
-      dateRangeValues = row.get('metrics', [])
+    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv").st_size == 0:
+        writer.writerow(['sessions', 'session count', 'date'])
 
-      for header, dimension in zip(dimensionHeaders, dimensions):
-        dailysession = (str(header.encode("utf-8")) + ': ' + str(dimension.encode("utf-8"))).replace("ga:sessions: ", "sessions, ")
-        daily = dailysession.replace('"',"")
-        dailysessions.write(daily + ", ")
-        # print header + ': ' + dimension
+    for report in response.get('reports', []):
+        metric_headers = report.get('columnHeader', {}).get('metricHeader', {}).get('metricHeaderEntries', [])
+        rows = report.get('data', {}).get('rows', [])
 
-      for i, values in enumerate(dateRangeValues):
-        for metricHeader, value in zip(metricHeaders, values.get('values')):
-          dailysession = (metricHeader.get('name') + ': ' + value).replace("ga:sessions: ", "sessions, ")
-          daily = dailysession.replace('"', "")
-          dailysessions.write(daily + ", " + str(datetime.datetime.now()) + "\n")
-          # print metricHeader.get('name') + ': ' + value.encode("utf-8")
-      
+        for row in rows:
+            date_range_values = row.get('metrics', [])
+
+            for i, values in enumerate(date_range_values):
+                for metric_header, value in zip(metric_headers, values.get('values')):
+                    writer.writerow(['sessions', value, str(datetime.datetime.now())])
+
+
 def main():
-  log_file = open("analyticserror.txt", "a")
-  try:
-    analytics = initialize_analyticsreporting()
-    response = get_report(analytics)
-    print_response(response)
-  except Exception as exc:
+    log_file = open("dailytownsessionserror.txt", "a")
+    try:
+        analytics = initialize_analyticsreporting()
+        response = get_report(analytics)
+        print_response(response)
+    except RuntimeError:
         log_file.write("There was an error running the program.")
         log_file.write(traceback.format_exc() + "\n")
 
+
 if __name__ == '__main__':
-  main()
+    main()
