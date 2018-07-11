@@ -17,7 +17,7 @@ except:
 
 # Authentication 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
-KEY_FILE_LOCATION = "client_secrets.json"
+KEY_FILE_LOCATION = "town_secrets.json"
 VIEW_ID = secrets.toch_viewid
 
 # Initialize with credentials   
@@ -47,7 +47,7 @@ def get_report(analytics):
 def print_response(response):
     
     # Create CSV to store data
-    dailytownsessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions", "a")
+    dailytownsessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv", "a")
 
     # Iterate through response data to write headers and data    
     for report in response.get('reports', []):
