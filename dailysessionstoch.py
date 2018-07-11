@@ -59,10 +59,10 @@ def print_response(response):
                 # Write headers to csv
                 for header in metric_headers:
                     # Write headers only if file is empty
-                    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions").st_size == 0:
+                    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv").st_size == 0:
                         dailytownsessions.write(header['name'] + ", ")
                 # Add date and enter if file is empty -- set here to avoid messing up headers in loop
-                if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions").st_size == 0:
+                if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsessions.csv").st_size == 0:
                     dailytownsessions.write("Date, \n")
                 # Write values under headers
                 for metricvalue in values['values']:
