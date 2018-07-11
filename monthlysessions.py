@@ -47,7 +47,7 @@ def get_report(analytics):
 def print_response(response):
     
     # Create CSV to store data
-    monthlysessions = open("monthlysessions.csv", "a")
+    monthlysessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlysessions.csv", "a")
 
     # Iterate through response data to write headers and data    
     for report in response.get('reports', []):
