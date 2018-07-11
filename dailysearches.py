@@ -7,7 +7,7 @@ import secrets
 import datetime
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
-KEY_FILE_LOCATION = "client_secrets.json"
+KEY_FILE_LOCATION = "toch_secrets.json"
 
 VIEW_ID = secrets.viewid
 
