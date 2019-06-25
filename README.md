@@ -6,13 +6,6 @@
 Analytics Reporting API V4 service object
 https://www.googleapis.com/auth/analytics.readonly
 
-### Output
- https://www.chapelhillopendata.org/explore/dataset/flurry/. 
- 
- ### Frequency
- 
- These scripts are run daily and the dataset is updated shortly after.
-
 #### dailybibsearches.py
 creates dailybibliosearch.csv
 
