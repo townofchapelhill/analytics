@@ -41,13 +41,14 @@ def get_report(analytics):
           'metrics': [{'expression': 'ga:searchResultViews'}],
           'dimensions': [{'name': 'ga:searchKeyword'}],
         }]
+        
       }
   ).execute()
 
 def print_response(response):
   
   # Change to correct path
-  monthlybibsearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlybibliosearch.csv", "w")
+  dailytownsearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlybibliosearch.csv", "w", encoding='utf-8')
   """Parses and prints the Analytics Reporting API V4 response.
   Args:
     response: An Analytics Reporting API V4 response.
@@ -65,17 +66,19 @@ def print_response(response):
         daily = (header + ': ' + dimension).replace("ga:searchKeyword: ", "")
         term = daily.replace('"',"")
         term = term.replace(",","")
-        monthlybibsearch.write(term + ", ")
+        dailytownsearch.write(term + ", ")
+        #print header + ': ' + dimension
 
       for i, values in enumerate(dateRangeValues):
         for metricHeader, value in zip(metricHeaders, values.get('values')):
           dailycount = (metricHeader.get('name') + ': ' + value).replace("ga:searchResultViews: ", "")
           count = dailycount.replace('"', "")
           count = count.replace(",","")
-          monthlybibsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
+          dailytownsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
+          #print metricHeader.get('name') + ': ' + value.encode("utf-8")
       
 def main():
-  log_file = open("bibanalyticserrorlog.txt", "a")
+  log_file = open("C:/OpenData/PythonScripts/logs/analyticserrorlog_monthly.txt", "a")
   try:
     analytics = initialize_analyticsreporting()
     response = get_report(analytics)
