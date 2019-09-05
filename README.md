@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/64014dde2ff1459e8c6c99b280716a38)](https://www.codacy.com/app/TownofChapelHill/analytics?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=townofchapelhill/analytics&amp;utm_campaign=Badge_Grade)
+
 # Flurry API
 ## Analytics scripts
 ### This repo contains a python script that accesses CHPL app usage data via the Flurry API via their website https://y.flurry.com and associated API console. The script makes a query and converts the results to CSV so they can be used to create a dataset in the Open Data Portal.
