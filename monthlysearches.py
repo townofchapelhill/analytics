@@ -5,6 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
 import datetime
+import filename_secrets
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "client_secrets.json"
@@ -47,16 +48,17 @@ def get_report(analytics):
       }
   ).execute()
 
-
-def print_response(response):
-  
-  # Change to correct path
-  monthlysearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlysearch.csv", "w")
-  """Parses and prints the Analytics Reporting API V4 response.
+  """
+  Parses and prints the Analytics Reporting API V4 response.
 
   Args:
     response: An Analytics Reporting API V4 response.
   """
+def print_response(response):
+
+  infofilename = os.path.join(filename_secrets.productionStaging, "monthlysearch.csv")
+  monthlysearch = open(infofilename, "w", encoding='utf-8')
+
   for report in response.get('reports', []):
     columnHeader = report.get('columnHeader', {})
     dimensionHeaders = columnHeader.get('dimensions', [])
@@ -81,7 +83,8 @@ def print_response(response):
           viewsstripped = viewsstripped.replace(",","")
           monthlysearch.write(viewsstripped + ", " + str(datetime.datetime.now()) + "\n")
           print metricHeader.get('name') + ': ' + value.encode("utf-8")
-      
+
+  monthlysearch.close()    
       
 
 def main():

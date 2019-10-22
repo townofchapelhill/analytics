@@ -10,6 +10,8 @@ try:
     import datetime
     import csv
     import os
+    import filename_secrets
+
 except:
     print("Could not import all libraries.")
     log_file.write("Library Import Failed")
@@ -46,8 +48,8 @@ def get_report(analytics):
 # Parses and prints the Analytics Reporting API V4 response. Args: response: An Analytics Reporting API V4 response.
 def print_response(response):
     
-    # Create CSV to store data
-    monthlytownsessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlytownsessions.csv", "a")
+    infofilename = os.path.join(filename_secrets.productionStaging, "monthlytownsessions.csv")
+    monthlytownsessions = open(infofilename, "a", encoding='utf-8')
 
     # Iterate through response data to write headers and data    
     for report in response.get('reports', []):
@@ -59,16 +61,18 @@ def print_response(response):
                 # Write headers to csv
                 for header in metric_headers:
                     # Write headers only if file is empty
-                    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/monthlytownsessions.csv").st_size == 0:
+                    if os.stat(monthlytownsessions).st_size == 0:
                         monthlytownsessions.write(header['name'] + ", ")
                 # Add date and enter if file is empty -- set here to avoid messing up headers in loop
-                if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/monthlytownsessions.csv").st_size == 0:
+                if os.stat(monthlytownsessions).st_size == 0:
                     monthlytownsessions.write("Date, \n")
                 # Write values under headers
                 for metricvalue in values['values']:
                     monthlytownsessions.write(metricvalue + ", ")
                 # End row by writing the date and a new line
                 monthlytownsessions.write(str(datetime.datetime.now()) + ", \n")
+
+    monthlytownsessions.close()
 
 # Call functions
 def main():

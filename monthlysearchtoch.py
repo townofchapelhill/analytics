@@ -5,6 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
 import traceback
+import filename_secrets
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "toch_secrets.json"
@@ -45,21 +46,20 @@ def get_report(analytics):
       }
   ).execute()
 
-
-def print_response(response):
-  
-  # Change to correct path
-  monthlysearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlytownsearch.csv", "w")
-  """Parses and prints the Analytics Reporting API V4 response.
+"""Parses and prints the Analytics Reporting API V4 response.
   Args:
     response: An Analytics Reporting API V4 response.
-  """
+"""
+def print_response(response):
+  
+  infofilename = os.path.join(filename_secrets.productionStaging, "monthlytownsearch.csv")
+  monthlysearch = open(infofilename, "w", encoding='utf-8')
+
   for report in response.get('reports', []):
     columnHeader = report.get('columnHeader', {})
     dimensionHeaders = columnHeader.get('dimensions', [])
     metricHeaders = columnHeader.get('metricHeader', {}).get('metricHeaderEntries', [])
     
-
     for row in report.get('data', {}).get('rows', []):
       dimensions = row.get('dimensions', [])
       dateRangeValues = row.get('metrics', [])
@@ -76,6 +76,9 @@ def print_response(response):
           viewsstripped = monthlyviews.replace('"', "")
           viewsstripped = viewsstripped.replace(",","")
           monthlysearch.write(viewsstripped + ", \n")
+
+  monthlysearch.close()
+
       
 def main():
   log_file = open("townanalyticserror.txt", "w")

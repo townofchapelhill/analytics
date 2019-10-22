@@ -6,6 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import secrets
 import traceback
 import datetime
+import filename_secrets
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "toch_secrets.json"
@@ -45,14 +46,18 @@ def get_report(analytics):
       }
   ).execute()
 
-def print_response(response):
-  
-  # Change to correct path
-  dailytownsearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailytownsearch.csv", "w")
-  """Parses and prints the Analytics Reporting API V4 response.
+
+"""
+  Parses and prints the Analytics Reporting API V4 response.
   Args:
     response: An Analytics Reporting API V4 response.
-  """
+"""
+def print_response(response):
+
+  # Open CSV to store data
+  fullfilename = os.path.join(filename_secrets.productionStaging, "dailytownsearch.csv")
+  dailytownsearch = open(fullfilename, "w", encoding='utf-8')
+
   for report in response.get('reports', []):
     columnHeader = report.get('columnHeader', {})
     dimensionHeaders = columnHeader.get('dimensions', [])
@@ -63,7 +68,7 @@ def print_response(response):
       dateRangeValues = row.get('metrics', [])
 
       for header, dimension in zip(dimensionHeaders, dimensions):
-        daily = (header) + ': ' + dimension)).replace("ga:searchKeyword: ", "")
+        daily = ((header) + ': ' + dimension)).replace("ga:searchKeyword: ", "")
         term = daily.replace('"',"")
         term = term.replace(",","")
         dailytownsearch.write(term + ", ")
@@ -74,6 +79,7 @@ def print_response(response):
           count = dailycount.replace('"', "")
           count = count.replace(",","")
           dailytownsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
+  dailytownsearch.close()
       
 def main():
   log_file = open("townanalyticserrorlog.txt", "a")

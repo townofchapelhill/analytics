@@ -10,6 +10,7 @@ try:
     import datetime
     import csv
     import os
+    import filename_secrets
 except:
     print("Could not import all libraries.")
     log_file.write("Library Import Failed")
@@ -42,12 +43,16 @@ def get_report(analytics):
         }
     ).execute()
 
-# Write the response    
-# Parses and prints the Analytics Reporting API V4 response. Args: response: An Analytics Reporting API V4 response.
+"""
+  Parses and prints the Analytics Reporting API V4 response.
+  Args:
+    response: An Analytics Reporting API V4 response.
+"""
 def print_response(response):
-    
-    # Create CSV to store data
-    dailysessions = open("//CHFS/Shared Documents/OpenData/datasets/staging/dailysessions.csv", "a")
+
+    # Open CSV to store data
+    fullfilename = os.path.join(filename_secrets.productionStaging, "dailysessions.csv")
+    dailysessions = open(fullfilename, "a", encoding='utf-8')
 
     # Iterate through response data to write headers and data    
     for report in response.get('reports', []):
@@ -59,16 +64,18 @@ def print_response(response):
                 # Write headers to csv
                 for header in metric_headers:
                     # Write headers only if file is empty
-                    if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailysessions.csv").st_size == 0:
+                    if os.stat(dailysessions).st_size == 0:
                         dailysessions.write(header['name'] + ", ")
                 # Add date and enter if file is empty -- set here to avoid messing up headers in loop
-                if os.stat("//CHFS/Shared Documents/OpenData/datasets/staging/dailysessions.csv").st_size == 0:
+                if os.stat(dailysessions).st_size == 0:
                     dailysessions.write("Date, \n")
                 # Write values under headers
                 for metricvalue in values['values']:
                     dailysessions.write(metricvalue + ", ")
                 # End row by writing the date and a new line
                 dailysessions.write(str(datetime.datetime.now()) + ", \n")
+                
+    dailysessions.close()
 
 # Call functions
 def main():

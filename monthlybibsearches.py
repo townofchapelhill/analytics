@@ -6,6 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import secrets
 import traceback
 import datetime
+import filename_secrets
 
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "client_secrets.json"
@@ -45,14 +46,15 @@ def get_report(analytics):
       }
   ).execute()
 
+""" Parses and prints the Analytics Reporting API V4 response.
+    Args:
+      response: An Analytics Reporting API V4 response.
+"""
 def print_response(response):
   
-  # Change to correct path
-  dailytownsearch = open("//CHFS/Shared Documents/OpenData/datasets/staging/monthlybibliosearch.csv", "w", encoding='utf-8')
-  """Parses and prints the Analytics Reporting API V4 response.
-  Args:
-    response: An Analytics Reporting API V4 response.
-  """
+  infofilename = os.path.join(filename_secrets.productionStaging, "monthlybibliosearch.csv")
+  dailytownsearch = open(infofilename, "a", encoding='utf-8')
+
   for report in response.get('reports', []):
     columnHeader = report.get('columnHeader', {})
     dimensionHeaders = columnHeader.get('dimensions', [])
@@ -76,6 +78,8 @@ def print_response(response):
           count = count.replace(",","")
           dailytownsearch.write(count + ", " + str(datetime.datetime.now()) + "\n")
           #print metricHeader.get('name') + ': ' + value.encode("utf-8")
+
+  dailytownsearch.close()
       
 def main():
   log_file = open("C:/OpenData/PythonScripts/logs/analyticserrorlog_monthly.txt", "a")
