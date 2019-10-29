@@ -1,7 +1,7 @@
 """Hello Analytics Reporting API V4."""
 
-from apiclient.discovery import build
-from oauth2client.service_account import ServiceAccountCredentials
+#from apiclient.discovery import build
+#from oauth2client.service_account import ServiceAccountCredentials
 
 import secrets
 import traceback
@@ -11,7 +11,7 @@ import filename_secrets
 SCOPES = ['https://www.googleapis.com/auth/analytics.readonly']
 KEY_FILE_LOCATION = "client_secrets.json"
 
-VIEW_ID = secrets.bibviewid
+#VIEW_ID = secrets.bibviewid
 
 def initialize_analyticsreporting():
   """Initializes an Analytics Reporting API V4 service object.
@@ -82,7 +82,7 @@ def print_response(response):
   dailytownsearch.close()
       
 def main():
-  log_file = open("C:/OpenData/PythonScripts/logs/analyticserrorlog_monthly.txt", "a")
+  #log_file = open("C:/OpenData/PythonScripts/logs/analyticserrorlog_monthly.txt", "a")
   try:
     analytics = initialize_analyticsreporting()
     response = get_report(analytics)
